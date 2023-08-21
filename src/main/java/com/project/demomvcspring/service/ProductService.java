@@ -1,42 +1,45 @@
 package com.project.demomvcspring.service;
 
 import com.project.demomvcspring.entity.Product;
-import com.project.demomvcspring.util.RandomNum;
+import com.project.demomvcspring.repo.ProductRepo;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
+import org.w3c.dom.stylesheets.LinkStyle;
+
 import java.util.Optional;
+import java.util.List;
 
 @Service
+@Transactional
 public class ProductService {
 
-    public static List<Product> products = new ArrayList<Product>() {
-        {
-            add(new Product(RandomNum.getRandom(1000,9999), "001", "indomie", 30000.0));
-            add(new Product(RandomNum.getRandom(1000,9999), "002", "jagung", 28000.0));
-            add(new Product(RandomNum.getRandom(1000,9999), "003", "teh", 31000.0));
-            add(new Product(RandomNum.getRandom(1000,9999), "004", "thai'thea", 33000.0));
-            add(new Product(RandomNum.getRandom(1000,9999), "005", "miegoreng", 34000.0));
-            add(new Product(RandomNum.getRandom(1000,9999), "006", "mierebus", 36000.0));
-        }
-    };
+    @Autowired
+    private ProductRepo repo;
 
-    public static List<Product> findAll() {
-        return products;
-
+    public Iterable<Product> findAll() {
+        return repo.findAll();
     }
 
     public void addProduct(Product product) {
-        product.setId(RandomNum.getRandom(1000,9999));
-        products.add(product);
+        repo.save(product);
     }
-    public void deleteById(long id){
-        products.removeIf(i -> i.getId() == id);
+
+    public void deleteById(long id) {
+        repo.deleteById(id);
     }
-    public Optional<Product> findById(long id){
 
-        return products.stream().filter(p -> p.getId()==id).findFirst();
+    public Optional<Product> findById(long id) {
 
+        return repo.findById(id);
+
+    }
+
+    public void updateProduct(Product product) {
+        repo.save(product);
+    }
+    public List<Product>findByName(String keyword){
+        return repo.findByNameContains(keyword);
     }
 
 }
